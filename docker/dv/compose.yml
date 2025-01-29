@@ -1,0 +1,8 @@
+services:
+  testapp-django:
+    build:
+      context: ../../src
+      dockerfile: ../docker/dv/Dockerfile
+    image: testapp-django
+    ports:
+      - "8000:8000"
