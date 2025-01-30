@@ -6,9 +6,31 @@ on:
       - main
 
 jobs:
-  build:
+  provision-infrastructure:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk
+
+      - name: Install dependencies
+        run: |
+          cd cdk-infra
+          npm install
+
+      - name: Deploy infrastructure with AWS CDK
+        run: |
+          cd cdk-infra
+          cdk deploy --require-approval never
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  build-and-push-image:
+    needs: provision-infrastructure
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,20 +50,3 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install AWS CDK
-        run: npm install -g aws-cdk
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Deploy infrastructure
-        run: cdk deploy --require-approval never

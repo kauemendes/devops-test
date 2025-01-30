@@ -1,5 +1,6 @@
 services:
   testapp-django:
+    platform: linux/amd64
     build:
       context: ../../src
       dockerfile: ../docker/pr/Dockerfile

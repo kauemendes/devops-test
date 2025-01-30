@@ -4,8 +4,8 @@ FROM python:3.9-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV DEBUG=1  # Enable Django debug mode
-ENV DEVELOPMENT=1  # Custom flag for development-specific settings
+ENV DEBUG=1  
+ENV DEVELOPMENT=1
 
 
 # Set work directory
