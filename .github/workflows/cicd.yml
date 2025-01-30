@@ -22,6 +22,7 @@ jobs:
         run: |
           pwd
           printenv
+          ls -la $(RUNNER_WORKSPACE)
           cd infra
           npm install
 
