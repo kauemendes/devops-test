@@ -20,6 +20,9 @@ jobs:
 
       - name: Install dependencies
         run: |
+          ls -la $RUNNER_WORKSPACE
+          pwd
+          ls -la $RUNNER_WORKSPACE/infra
           cd $RUNNER_WORKSPACE/infra
           npm install
 
