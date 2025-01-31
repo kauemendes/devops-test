@@ -5,5 +5,7 @@ services:
       context: ../../src
       dockerfile: ../docker/pr/Dockerfile
     image: testapp-django
+    environment:
+      - ALLOWED_HOSTS="*"
     ports:
       - "8000:8000"

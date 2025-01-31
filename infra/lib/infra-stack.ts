@@ -41,6 +41,9 @@ export class DevOpsTestStack extends cdk.Stack {
     const container = taskDefinition.addContainer('AppContainer', {
       image: ecs.ContainerImage.fromEcrRepository(repository, 'latest'),
       logging: ecs.LogDrivers.awsLogs({ streamPrefix: 'DevOpsTest' }),
+      environment: {
+        ALLOWED_HOSTS: '*',
+      },
     });
     container.addPortMappings({ containerPort: 8000 });
 
