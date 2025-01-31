@@ -96,7 +96,7 @@ jobs:
         run: |
           echo $REGISTRY
           echo $REPOSITORY
-          echo "AWS_REGION: $AWS_REGION"
+          echo "$REGISTRY" | awk -F'.' '{ for (i=1; i<=NF; i++) print $i }'
           cd src
           docker build -f ../docker/pr/Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
