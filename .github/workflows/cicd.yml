@@ -20,15 +20,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          ls -la $RUNNER_WORKSPACE
+          ls -la $RUNNER_WORKSPACE/devops-test
           pwd
-          ls -la $RUNNER_WORKSPACE/infra
-          cd $RUNNER_WORKSPACE/infra
-          npm install
+          ls -la $RUNNER_WORKSPACE/devops-test/infra
+          cd $RUNNER_WORKSPACE/devops-test/infra
+          npm ci
 
       - name: Deploy infrastructure with AWS CDK
         run: |
-          cd $RUNNER_WORKSPACE/infra
+          cd $RUNNER_WORKSPACE/devops-test/infra
           cdk deploy --require-approval never
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
