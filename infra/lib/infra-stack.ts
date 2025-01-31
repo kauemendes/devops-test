@@ -1,53 +1,71 @@
 import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
-import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 
-export class InfraStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+export class DevOpsTestStack extends cdk.Stack {
+  constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // Create an ECR repository
-    const repository = new ecr.Repository(this, 'TestAppRepository', {
-      repositoryName: 'testapp-repo',
-    });
-
     // Create a VPC
-    const vpc = new ec2.Vpc(this, 'TestAppVpc', {
+    const vpc = new ec2.Vpc(this, 'DevOpsTestVPC', {
       maxAzs: 2,
     });
 
-    // Create an ECS §uster
-    const cluster = new ecs.Cluster(this, 'TestAppCluster', {
+    // Create an ECR Repository
+    const repository = new ecr.Repository(this, 'DevOpsTestRepo');
+
+    // Create an ECS Cluster
+    const cluster = new ecs.Cluster(this, 'DevOpsTestCluster', {
       vpc,
-      clusterName: 'testapp-cluster',
     });
 
-    // Create a task definition
-    const taskDefinition = new ecs.FargateTaskDefinition(this, 'TestAppTaskDef', {
+    // Define Task Role
+    const taskRole = new iam.Role(this, 'TaskExecutionRole', {
+      assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName("service-role/AmazonECSTaskExecutionRolePolicy")
+      ]
+    });
+
+    // Create a Fargate Task Definition
+    const taskDefinition = new ecs.FargateTaskDefinition(this, 'DevOpsTestTaskDef', {
       memoryLimitMiB: 512,
       cpu: 256,
+      executionRole: taskRole
     });
 
-    // Add a container to the task definition
-    taskDefinition.addContainer('TestAppContainer', {
-      image: ecs.ContainerImage.fromEcrRepository(repository),
-      memoryLimitMiB: 512,
-      cpu: 256,
-      environment: {
-        REQUIRED_SETTING: 'some_value',
-      },
-      logging: ecs.LogDrivers.awsLogs({ streamPrefix: 'testapp' }),
+    // Add container to Task Definition
+    const container = taskDefinition.addContainer('AppContainer', {
+      image: ecs.ContainerImage.fromEcrRepository(repository, 'latest'),
+      logging: ecs.LogDrivers.awsLogs({ streamPrefix: 'DevOpsTest' }),
+    });
+    container.addPortMappings({ containerPort: 8000 });
+
+    // Create an Application Load Balancer
+    const loadBalancer = new elbv2.ApplicationLoadBalancer(this, 'DevOpsTestALB', {
+      vpc,
+      internetFacing: true,
     });
 
-    // Create an ECS service
-    new ecs.FargateService(this, 'TestAppService', {
+    // Create an ALB Listener and Target Group
+    const listener = loadBalancer.addListener('Listener', {
+      port: 80,
+      open: true,
+    });
+
+    // Create an ECS Service
+    const service = new ecs.FargateService(this, 'DevOpsTestService', {
       cluster,
       taskDefinition,
       desiredCount: 1,
-      serviceName: 'testapp-service',
+    });
+
+    listener.addTargets('ECS', {
+      port: 80,
+      targets: [service],
     });
   }
 }

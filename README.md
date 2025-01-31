@@ -4,9 +4,9 @@ This repository contains a sample project to demonstrate DevOps practices using 
 
 ## Capabilities
 
-- **Django Application**: A simple Django application named `testapp`.
-- **AWS CDK Infrastructure**: Infrastructure as code using AWS CDK.
-- **Development and Production Configurations**: Separate configurations for development and production environments.
+- **Django Application**: A simple Django application named `testapp`, located into src.
+- **AWS CDK Infrastructure**: Infrastructure as code using AWS CDK into infra folder.
+- **Development and Production Configurations**: Separate configurations for development and production environments located into docker folder.
 
 ## Getting Started
 
@@ -17,7 +17,7 @@ This repository contains a sample project to demonstrate DevOps practices using 
 - AWS CLI
 - AWS CDK
 
-### Installation
+### Installation 
 
 1. Clone the repository:
   ```bash
@@ -25,48 +25,41 @@ This repository contains a sample project to demonstrate DevOps practices using 
   cd devops-test
   ```
 
-2. Create a virtual environment and activate it:
-  ```bash
-  python -m venv venv
-  source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-  ```
+#### Python TestApp 
 
-3. Install the required Python packages:
-  ```bash
-  pip install -r requirements.txt
-  ```
+1. Build development server using make command with Docker and Docker Compose.
+```bash
+  make build-development
+```
 
-4. Install the required Node.js packages for CDK:
+2. Build a production server using make command with Docker Compose.
+```bash
+  make build-production
+```
+
+#### CDK Infra
+
+1. Install the required Node.js packages for CDK:
   ```bash
+  cd infra
   npm install
   ```
 
+2. Configure AWS secrets and bootstrap the project
+```bash
+  export AWS_ACCESS_KEY_ID=***
+  export AWS_SECRET_ACCESS_KEY=***
+  cd infra
+  cdk bootstrap
+```
+
+3. Run the provisioning
+```bash
+  cd infra
+  cdk deploy
+```
+
 ## Building and Running the Project
-
-### Development Configuration
-
-1. Apply migrations and start the Django development server:
-  ```bash
-  python manage.py migrate
-  python manage.py runserver
-  ```
-
-2. Access the application at `http://127.0.0.1:8000`.
-
-### Production Configuration
-
-1. Set the `DJANGO_SETTINGS_MODULE` environment variable to `testapp.settings.production`:
-  ```bash
-  export DJANGO_SETTINGS_MODULE=testapp.settings.production
-  ```
-
-2. Apply migrations and start the Django server:
-  ```bash
-  python manage.py migrate
-  python manage.py runserver 0.0.0.0:8000
-  ```
-
-3. Access the application at your server's IP address.
 
 ## CDK Infrastructure
 
@@ -99,10 +92,6 @@ To run the tests for the Django application, use the following command:
 ```bash
 python manage.py test
 ```
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
 
 ## License
 
