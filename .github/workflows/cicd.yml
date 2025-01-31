@@ -24,7 +24,7 @@ jobs:
       - name: cdk bootstrap
         uses: tj-actions/aws-cdk@v4
         with:
-          working_dir: $RUNNER_WORKSPACE/devops-test/infra
+          working_dir: infra
           cdk_subcommand: "bootstrap"
           cdk_stack: "stack1"
         env:
@@ -35,7 +35,7 @@ jobs:
       - name: cdk diff
         uses: tj-actions/aws-cdk@v4
         with:
-          working_dir: $RUNNER_WORKSPACE/devops-test/infra
+          working_dir: infra
           cdk_subcommand: "diff"
           cdk_stack: "stack1"
         env:
@@ -46,7 +46,7 @@ jobs:
       - name: cdk synth
         uses: tj-actions/aws-cdk@v4
         with:
-          working_dir: $RUNNER_WORKSPACE/devops-test/infra
+          working_dir: infra
           cdk_subcommand: "synth"
           cdk_stack: "stack1"
         env:
@@ -57,7 +57,7 @@ jobs:
       - name: cdk deploy
         uses: tj-actions/aws-cdk@v4
         with:
-          working_dir: $RUNNER_WORKSPACE/devops-test/infra
+          working_dir: infra
           cdk_subcommand: "deploy"
           cdk_stack: "stack1"
           cdk_extra_args: >-
