@@ -37,7 +37,6 @@ jobs:
         with:
           working_dir: infra
           cdk_subcommand: "diff"
-          cdk_stack: "aws://543289521753/us-west-2"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -48,7 +47,6 @@ jobs:
         with:
           working_dir: infra
           cdk_subcommand: "synth"
-          cdk_stack: "aws://543289521753/us-west-2"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -59,7 +57,6 @@ jobs:
         with:
           working_dir: infra
           cdk_subcommand: "deploy"
-          cdk_stack: "aws://543289521753/us-west-2"
           cdk_extra_args: >-
             --progress events
             --require-approval never
