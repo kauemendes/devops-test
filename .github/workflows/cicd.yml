@@ -97,6 +97,8 @@ jobs:
           echo $REGISTRY
           echo $REPOSITORY
           echo "$REGISTRY" | awk -F'.' '{ for (i=1; i<=NF; i++) print $i }'
+          echo "$REGISTRY" | sed 's/./& /g'
+          echo $AWS_REGION | sed 's/./& /g'
           cd src
           docker build -f ../docker/pr/Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
