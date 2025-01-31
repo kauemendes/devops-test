@@ -81,7 +81,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: 'us-west-2'
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -92,7 +92,7 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: devopsteststack-devopstestrepo17fe3f0b-1ppqec17ooxm
           IMAGE_TAG: latest
-          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_REGION: 'us-west-2'
         run: |
           echo $REGISTRY
           echo $REPOSITORY
