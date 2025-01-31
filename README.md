@@ -4,9 +4,9 @@ This repository contains a sample project to demonstrate DevOps practices using 
 
 ## Capabilities
 
-- **Django Application**: A simple Django application named `testapp`, located into src.
-- **AWS CDK Infrastructure**: Infrastructure as code using AWS CDK into infra folder.
-- **Development and Production Configurations**: Separate configurations for development and production environments located into docker folder.
+- **Django Application**: A simple Django application named `testapp`, located in the `src` folder.
+- **AWS CDK Infrastructure**: Infrastructure as code using AWS CDK in the `infra` folder.
+- **Development and Production Configurations**: Separate configurations for development and production environments located in the `docker` folder.
 
 ## Getting Started
 
@@ -27,15 +27,15 @@ This repository contains a sample project to demonstrate DevOps practices using 
 
 #### Python TestApp 
 
-1. Build development server using make command with Docker and Docker Compose.
-```bash
+1. Build the development server using the make command with Docker and Docker Compose:
+  ```bash
   make build-development
-```
+  ```
 
-2. Build a production server using make command with Docker Compose.
-```bash
+2. Build the production server using the make command with Docker Compose:
+  ```bash
   make build-production
-```
+  ```
 
 #### CDK Infra
 
@@ -45,19 +45,19 @@ This repository contains a sample project to demonstrate DevOps practices using 
   npm install
   ```
 
-2. Configure AWS secrets and bootstrap the project
-```bash
+2. Configure AWS secrets and bootstrap the project:
+  ```bash
   export AWS_ACCESS_KEY_ID=***
   export AWS_SECRET_ACCESS_KEY=***
   cd infra
   cdk bootstrap
-```
+  ```
 
-3. Run the provisioning
-```bash
+3. Run the provisioning:
+  ```bash
   cd infra
   cdk deploy
-```
+  ```
 
 ## Building and Running the Project
 
@@ -89,9 +89,9 @@ The `testapp` Django application is a simple web application that demonstrates b
 ### Running Tests
 
 To run the tests for the Django application, use the following command:
-```bash
-python manage.py test
-```
+  ```bash
+  python manage.py test
+  ```
 
 ## License
 
