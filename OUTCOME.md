@@ -1,27 +1,32 @@
 # OUTCOMES
 
-## My toughts and concerns
+## Summary
+
+This document outlines the steps taken to create a CI/CD pipeline for a Django application using Docker, AWS CDK, and GitHub Actions. It includes containerizing the application, provisioning infrastructure, setting up CI/CD workflows, and suggestions for improvements.
+
+## My Thoughts and Concerns
 
 To achieve the goal of creating a CI/CD pipeline for a Django application using Docker, AWS CDK, and GitHub Actions, I followed a structured approach. This approach ensures that the infrastructure is provisioned automatically, the application is containerized, and the deployment process is fully automated.
 
-1. Containerizing the Django Application
+### 1. Containerizing the Django Application
 
 The first step was to containerize the Django application using Docker. This ensures that the application runs consistently across different environments. I created a Dockerfile that:
 
-    - Uses a python:3.9-slim base image for a lightweight environment.
-    - Sets up the necessary environment variables for development and production.
-    - Installs the application dependencies from requirements.txt.
-    - Exposes port 8000 for the Django application.
-    - Includes a HEALTHCHECK to monitor the application's health.
-For development, I enhanced the Dockerfile to include debugging tools like debugpy and enabled auto-reloading using Django's runserver command.
+- Uses a `python:3.9-slim` base image for a lightweight environment.
+- Sets up the necessary environment variables for development and production.
+- Installs the application dependencies from `requirements.txt`.
+- Exposes port 8000 for the Django application.
+- Includes a `HEALTHCHECK` to monitor the application's health.
 
-**Extra Information**: I encountered an issue with CloudFormation getting stuck in the CREATE phase for the Service. Due to time constraints, I had to directly modify the source code to override the ALLOWED_HOST setting. This is not the best approach, but it was necessary to meet the deadline.
+For development, I enhanced the Dockerfile to include debugging tools like `debugpy` and enabled auto-reloading using Django's `runserver` command.
 
-2. Provisioning Infrastructure with AWS CDK
+**Extra Information**: I encountered an issue with CloudFormation getting stuck in the CREATE phase for the Service. Due to time constraints, I had to directly modify the source code to override the `ALLOWED_HOST` setting. This is not the best approach, but it was necessary to meet the deadline.
+
+### 2. Provisioning Infrastructure with AWS CDK
 
 Next, I used AWS CDK (Cloud Development Kit) for the first time to define the infrastructure as code. I had never experienced this tool before, and it was my first contact with this type of IaC. The infrastructure includes:
 
-**Resources Created by infra/lib/infra-stack.ts**:
+**Resources Created by `infra/lib/infra-stack.ts`**:
 
 - Amazon Elastic Container Registry (ECR) repository
 - Amazon Elastic Container Service (ECS) cluster
@@ -35,32 +40,31 @@ Next, I used AWS CDK (Cloud Development Kit) for the first time to define the in
 - Security groups
 - IAM roles and policies
 
-The AWS CDK stack was written in TypeScript, allowing me to define the infrastructure in a programmatic way, I firmly believe that it can have different ways to do that in a better and more reusable structure. The stack ensures that the ECR repository is created before the Docker image is pushed, and the ECS service is deployed after the image is available.
+The AWS CDK stack was written in TypeScript, allowing me to define the infrastructure in a programmatic way. I firmly believe that it can have different ways to do that in a better and more reusable structure. The stack ensures that the ECR repository is created before the Docker image is pushed, and the ECS service is deployed after the image is available.
 
-**Extra information**: Also the ALLOWED_HOST environmnet could be managed by the CDK project, but due time I could not make it work.
+**Extra Information**: Also, the `ALLOWED_HOST` environment could be managed by the CDK project, but due to time constraints, I could not make it work.
 
 **Additional Comments**: I encountered some CloudFormation errors or got stuck during the creation process. From my research, this seems to be a common issue that might need adjustments in the deployment process or how the components are created together. Unfortunately, I did not have enough time to troubleshoot it thoroughly.
 
-3. Setting Up GitHub Actions for CI/CD
+### 3. Setting Up GitHub Actions for CI/CD
 
 To automate the entire process, I set up a GitHub Actions workflow. The workflow is divided into two main jobs:
-a. Provision Infrastructure
 
-    - This job uses AWS CDK to deploy the infrastructure stack.
+#### a. Provision Infrastructure
 
-    - It ensures that the ECR repository and other necessary resources are created before proceeding to the next steps.
+- This job uses AWS CDK to deploy the infrastructure stack.
+- It ensures that the ECR repository and other necessary resources are created before proceeding to the next steps.
+- The job runs only when changes are pushed to the main branch.
 
-    - The job runs only when changes are pushed to the main branch.
+#### b. Build and Push Docker Image
 
-b. Build and Push Docker Image
+- Once the infrastructure is provisioned, this job builds the Docker image for the Django application.
+- It logs into Amazon ECR and pushes the Docker image to the repository.
+- The image is tagged with `latest` for simplicity, but you can use more sophisticated tagging strategies (e.g., Git commit SHA).
 
-    - Once the infrastructure is provisioned, this job builds the Docker image for the Django application.
-    - It logs into Amazon ECR and pushes the Docker image to the repository.
-    - The image is tagged with latest for simplicity, but you can use more sophisticated tagging strategies (e.g., Git commit SHA).
-  
-Using `latest` as the image tag for this project, I did not have enough time to implement a Redeploy phase for the ECS. Which may need to force deploy eventually.
+Using `latest` as the image tag for this project, I did not have enough time to implement a Redeploy phase for the ECS, which may need to force deploy eventually.
 
-For me the best scenario for this project could be something like that:
+### Best Scenario for Fully Automated Deployment
 
 1. **Containerizing the Django Application**
 
