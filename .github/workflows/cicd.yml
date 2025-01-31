@@ -95,6 +95,6 @@ jobs:
         run: |
           echo $REGISTRY
           echo $REPOSITORY
-          printenv
-          docker build -f docker/pr/Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          cd src
+          docker build -f ../docker/pr/Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
