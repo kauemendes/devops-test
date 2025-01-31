@@ -92,9 +92,11 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: devopsteststack-devopstestrepo17fe3f0b-1ppqec17ooxm
           IMAGE_TAG: latest
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
           echo $REGISTRY
           echo $REPOSITORY
+          echo "AWS_REGION: $AWS_REGION"
           cd src
           docker build -f ../docker/pr/Dockerfile -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
