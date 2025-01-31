@@ -4,7 +4,6 @@ FROM python:3.9-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV ALLOWED_HOSTS="*"
 
 # Set work directory
 WORKDIR /app
